@@ -1,0 +1,178 @@
+<!-- Imports -->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+
+<link rel="import" href="../strolch-wc-styles/strolch-wc-styles.html">
+<link rel="import" href="../strolch-wc-localize-behavior/strolch-wc-localize-behavior.html">
+
+<dom-module id="strolch-wc-parameter-input">
+    <template>
+
+        <!-- Style -->
+        <style is="custom-style" include="strolch-wc-styles">
+            :host {
+                display: block;
+                padding: 0;
+            }
+
+            paper-input, paper-checkbox, paper-dropdown-menu {
+                display: block;
+            }
+
+            paper-input {
+                --paper-input-container: {
+                    padding: 4px 0;
+                };
+            }
+
+            paper-checkbox {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            paper-input.new {
+                --paper-input-container-color: lightgray;
+                --paper-input-container-focus-color: lightgray;
+                --paper-input-container-input-color: lightgray;
+                --paper-input-container-label: lightgray;
+            }
+
+            paper-checkbox.new {
+                --paper-checkbox-unchecked-background-color: lightgray;
+                --paper-checkbox-unchecked-color: lightgray;
+                --paper-checkbox-checked-color: lightgray;
+                --paper-checkbox-label-color: lightgray;
+                --paper-checkbox-label-checked-color: lightgray;
+            }
+
+        </style>
+
+        <!-- Content -->
+        <template is="dom-if" if="[[isBoolean]]">
+            <paper-checkbox class$="[[getFieldClass(parameter)]]"
+                            checked="{{newValue}}"
+                            on-change="onParameterValueChanged">
+                [[localize(parameter.id)]]
+            </paper-checkbox>
+        </template>
+
+        <template is="dom-if" if="[[isNumber]]">
+            <paper-input class$="[[getFieldClass(parameter)]]"
+                         label="[[localize(parameter.id)]]"
+                         value="{{newValue}}"
+                         required
+                         type="number"
+                         auto-validate
+                         prevent-invalid-input
+                         allowed-pattern="\d"
+                         always-float-label
+                         on-change="onParameterValueChanged"></paper-input>
+        </template>
+
+        <template is="dom-if" if="[[isString]]">
+            <paper-input class$="[[getFieldClass(parameter)]]"
+                         label="[[localize(parameter.id)]]"
+                         value="[[newValue]]"
+                         always-float-label
+                         on-change="onParameterValueChanged"></paper-input>
+        </template>
+
+    </template>
+
+    <script>
+        Polymer({
+
+            /* Component */
+            is: "strolch-wc-parameter-input",
+            behaviors: [
+                StrolchLocalizeBehavior
+            ],
+
+            /* Properties */
+            properties: {
+                localesPath: {
+                    type: String,
+                    value: '../../../locales.json'
+                },
+                parameter: {
+                    type: Object,
+                    observer: "onParameterChanged"
+                },
+                isBoolean: {
+                    type: Boolean,
+                    computed: "computeIsBoolean(parameter)"
+                },
+                isNumber: {
+                    type: Boolean,
+                    computed: "computeIsNumber(parameter)"
+                },
+                isString: {
+                    type: Boolean,
+                    computed: "computeIsString(parameter)"
+                },
+                currentValue: {
+                    type: Object
+                },
+                newValue: {
+                    type: Object
+                }
+            },
+
+            /* Computations */
+            getFieldClass: function (parameter) {
+                return parameter == null || !parameter.new ? "" : "new";
+            },
+            computeIsBoolean: function (parameter) {
+                return parameter != null && parameter.type === "Boolean";
+            },
+            computeIsNumber: function (parameter) {
+                return parameter != null && (parameter.type === "Integer" || parameter.type === "Float" || parameter.type === "Long");
+            },
+            computeIsString: function (parameter) {
+                return !this.computeIsBoolean(parameter) && !this.computeIsNumber(parameter);
+            },
+
+            /* Observers */
+            observers: [],
+
+            onParameterChanged: function (newValue, oldValue) {
+                if (newValue == null) {
+                    this.currentValue = null;
+                    this.newValue = null;
+                    return;
+                }
+
+                this.currentValue = newValue.value;
+                this.newValue = newValue.value;
+            },
+            onParameterValueChanged: function (e) {
+                if (this.isBoolean) {
+                    this.newValue = e.target.checked;
+                } else {
+                    this.newValue = e.target.value;
+                }
+
+                this.fire("strolch-param-value-changed", {
+                    parameter: this.parameter,
+                    newValue: this.newValue
+                });
+            },
+
+            /* Listeners */
+            listeners: {},
+
+            /* Private */
+
+            /* Public */
+
+            /* Lifecycle */
+
+            reload: function () {
+            },
+
+            refresh: function () {
+            }
+        });
+    </script>
+</dom-module>
