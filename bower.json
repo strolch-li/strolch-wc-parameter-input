@@ -1,7 +1,7 @@
 {
   "name": "strolch-wc-parameter-input",
   "description": "Strolch WebComponent Parameter Input",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "authors": [
     "Robert von Burg"
   ],
@@ -22,9 +22,9 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^1.11.3",
 
-    "strolchjs": "strolch-li/strolchjs#^0.5.0",
+    "strolchjs": "strolch-li/strolchjs#^0.5.1",
     "strolch-wc-styles": "strolch-li/strolch-wc-styles#^0.3.1",
-    "strolch-wc-localize-behavior": "strolch-li/strolch-wc-localize-behavior#^1.1.13",
+    "strolch-wc-localize-behavior": "strolch-li/strolch-wc-localize-behavior#^1.1.14",
 
     "paper-input": "PolymerElements/paper-input#^1.2.1",
     "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.2"
